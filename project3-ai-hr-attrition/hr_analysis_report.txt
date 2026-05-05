@@ -1,0 +1,96 @@
+HR ATTRITION ANALYSIS REPORT
+==================================================
+
+Total Employees: 1470
+Attrition Rate: 16.12%
+
+AI INSIGHTS:
+Based on the provided HR attrition data, here are the insights and recommendations:
+
+**1. Top 3 key findings from this data:**
+1. The overall attrition rate is 16.12%, which is relatively high, indicating a significant loss of talent within the company.
+2. The average monthly income of employees who left ($4787.0) is significantly lower than those who stayed ($6833.0), suggesting that compensation may be a factor in attrition.
+3. Employees who worked overtime (30.53% attrition rate) are more likely to leave the company compared to those who did not (10.44% attrition rate), indicating that work-life balance and burnout may be contributing to attrition.
+
+**2. Root causes of attrition:**
+Based on the data, the potential root causes of attrition are:
+* Low compensation (average monthly income of $4787.0 for those who left)
+* Lack of work-life balance and potential burnout (30.53% attrition rate for those who worked overtime)
+* Limited growth opportunities or job satisfaction (high attrition rates in certain job roles, such as Sales Representative and Laboratory Technician)
+
+**3. 3 specific recommendations for HR team:**
+1. **Conduct a market-based compensation review**: To ensure that the company's compensation packages are competitive, the HR team should conduct a market analysis to determine if the average monthly income of $4787.0 for those who left is below market average. If so, consider adjusting salaries to retain top talent.
+2. **Implement employee wellness and work-life balance initiatives**: To address the high attrition rate among employees who worked overtime, the HR team should consider implementing employee wellness programs, flexible work arrangements, or employee recognition and reward schemes to promote work-life balance and reduce burnout.
+3. **Develop targeted retention strategies for high-risk job roles**: The HR team should develop specific retention strategies for job roles with high attrition rates, such as Sales Representative (39.76%) and Laboratory Technician (23.94%). This could include providing additional training, career development opportunities, or recognizing and rewarding employees in these roles.
+
+**4. Which department needs immediate attention:**
+The **Sales** department needs immediate attention, with an attrition rate of 20.63%, which is higher than the overall company average of 16.12%. This department also has two job roles (Sales Representative and Sales Executive) among the top 5 job roles with the highest attrition rates. The HR team should work closely with the Sales department to identify the root causes of attrition and develop targeted retention strategies to reduce turnover and improve sales team stability.
+
+SQL QUERIES:
+```sql
+-- 1. Attrition rate by department
+SELECT 
+    Department,
+    SUM(CASE WHEN Attrition = 'Yes' THEN 1 ELSE 0 END) AS Total_Left,
+    COUNT(*) AS Total_Employees,
+    (SUM(CASE WHEN Attrition = 'Yes' THEN 1.0 ELSE 0 END) / COUNT(*)) * 100 AS Attrition_Rate
+FROM 
+    employees
+GROUP BY 
+    Department;
+
+-- 2. Average salary of employees who left vs stayed
+SELECT 
+    Attrition,
+    AVG(MonthlyIncome) AS Average_Salary
+FROM 
+    employees
+GROUP BY 
+    Attrition;
+
+-- 3. Overtime impact on attrition
+SELECT 
+    OverTime,
+    SUM(CASE WHEN Attrition = 'Yes' THEN 1 ELSE 0 END) AS Total_Left,
+    COUNT(*) AS Total_Employees,
+    (SUM(CASE WHEN Attrition = 'Yes' THEN 1.0 ELSE 0 END) / COUNT(*)) * 100 AS Attrition_Rate
+FROM 
+    employees
+GROUP BY 
+    OverTime;
+
+-- 4. Top 5 job roles with highest attrition
+SELECT 
+    JobRole,
+    SUM(CASE WHEN Attrition = 'Yes' THEN 1 ELSE 0 END) AS Total_Left,
+    COUNT(*) AS Total_Employees,
+    (SUM(CASE WHEN Attrition = 'Yes' THEN 1.0 ELSE 0 END) / COUNT(*)) * 100 AS Attrition_Rate
+FROM 
+    employees
+GROUP BY 
+    JobRole
+ORDER BY 
+    Attrition_Rate DESC
+LIMIT 5;
+
+-- 5. Attrition by age group
+SELECT 
+    CASE 
+        WHEN Age BETWEEN 20 AND 30 THEN '20-30'
+        WHEN Age BETWEEN 31 AND 40 THEN '31-40'
+        WHEN Age BETWEEN 41 AND 50 THEN '41-50'
+        ELSE '50+'
+    END AS Age_Group,
+    SUM(CASE WHEN Attrition = 'Yes' THEN 1 ELSE 0 END) AS Total_Left,
+    COUNT(*) AS Total_Employees,
+    (SUM(CASE WHEN Attrition = 'Yes' THEN 1.0 ELSE 0 END) / COUNT(*)) * 100 AS Attrition_Rate
+FROM 
+    employees
+GROUP BY 
+    CASE 
+        WHEN Age BETWEEN 20 AND 30 THEN '20-30'
+        WHEN Age BETWEEN 31 AND 40 THEN '31-40'
+        WHEN Age BETWEEN 41 AND 50 THEN '41-50'
+        ELSE '50+'
+    END;
+```
